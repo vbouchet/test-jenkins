@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Code for the main module.
+ */
+
+function custom_main_menu() {
+  $items = array();
+
+  $items['test'] = array(
+   'title' => t('test'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
