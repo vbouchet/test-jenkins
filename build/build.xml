@@ -5,21 +5,17 @@
             description=""/>
 
     <target name="clean"
-            unless="clean.done"
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
-        <property name="clean.done" value="true" />
         <echo message="Clean" />
         <exec command="print ici"/>
     </target>
 
     <target name="prepare"
-            unless="prepare.done"
             depends="clean"
             description="Prepare for build">
         <mkdir dir="${basedir}/build/logs" />
         <touch file="${basedir}/build/logs/comment.md" />
-        <property name="prepare.done" value="true" />
     </target>
 
     <target name="phploc"
@@ -42,11 +38,11 @@
         </exec>
     </target>
 
-    <fail message="Build failed">
+    <!--<fail message="Build failed">
         <condition>
             <not>
                 <equals arg1="${phpcs}" arg2="0"/>
             </not>
         </condition>
-    </fail>
+    </fail>-->
 </project>
