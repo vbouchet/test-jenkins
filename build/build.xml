@@ -7,8 +7,6 @@
     <target name="clean"
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
-        <echo message="Clean" />
-        <exec command="print ici"/>
     </target>
 
     <target name="prepare"
@@ -20,11 +18,12 @@
 
     <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
-        <echo message="Avant pour phploc" />
         <exec executable="phploc">
             <!--<arg value="-log-csv" />
             <arg path="${basedir}/build/logs/phploc.csv" />-->
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
+            <arg value="--names"/>
+            <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
         </exec>
         <echo message="Ici pour phploc" />
     </target>
