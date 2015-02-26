@@ -12,6 +12,7 @@ function custom_main_menu() {
 
   $items['test'] = array(
     'title' => 'test',
+    'description' => 'A test menu item',
     'type' => MENU_CALLBACK,
   );
 
