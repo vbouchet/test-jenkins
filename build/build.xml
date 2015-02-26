@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phploc, phpcs"
+            depends="prepare, phploc"
             description=""/>
 
     <target name="clean"
@@ -22,6 +22,7 @@
 
     <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
+        <echo message="Avant pour phploc" />
         <exec executable="phploc">
             <!--<arg value="-log-csv" />
             <arg path="${basedir}/build/logs/phploc.csv" />-->
