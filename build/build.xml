@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phploc"
+            depends="prepare"
             description=""/>
 
     <target name="clean-dir"
@@ -22,8 +22,12 @@
     </target>
 
     <target name="prepare"
-            depends="clean-dir, init-var, init-dir"
+            
             description="Prepare for build">
+        <delete dir="${basedir}/build/logs" />
+        <mkdir dir="${basedir}/build/logs" />
+        <touch file="${basedir}/build/logs/comment.md" />
+        <property name="phpcs" value="1" />
     </target>
 
     <!--<target name="phploc"
