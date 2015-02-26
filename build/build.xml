@@ -31,7 +31,7 @@
 
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="phpcs" output="${basedir}/build/logs/comment.md">
+        <exec executable="phpcs" output="${basedir}/build/logs/comment.md" failonerror="true">
             <arg value="--standard=Drupal" />
             <arg value="--report=full" />
             <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
