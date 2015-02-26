@@ -12,6 +12,7 @@
     <target name="init-var"
             description="Init variables values">
         <property name="phpcs" value="1" />
+        <echo message="${phpcs}" />
     </target>
 
     <target name="init-dir"
@@ -21,7 +22,7 @@
     </target>
 
     <target name="prepare"
-            depends="clean-dir, init-var"
+            depends="clean-dir, init-var, init-dir"
             description="Prepare for build">
     </target>
 
@@ -29,10 +30,10 @@
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="phploc">
             <arg value="--log-csv" />
-            <arg path="${basedir}/build/logs/phploc.csv" />
-            <arg path="${basedir}/docroot/sites/all/modules/custom" />
+            <arg value="${basedir}/build/logs/phploc.csv" />
             <arg value="--names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
         <echo message="Ici pour phploc" />
     </target>
