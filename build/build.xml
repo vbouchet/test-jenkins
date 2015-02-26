@@ -26,12 +26,12 @@
             description="Prepare for build">
     </target>
 
-    <target name="phploc"
+    <!--<target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="phploc">
-            <arg value="--log-csv" />
+            <arg value="-log-csv" />
             <arg value="${basedir}/build/logs/phploc.csv" />
-            <arg value="--names"/>
+            <arg value="-names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
@@ -41,11 +41,11 @@
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="phpcs">
-            <arg value="--standard=Drupal" />
-            <arg value="--report=full" />
+            <arg value="-standard=Drupal" />
+            <arg value="-report=full" />
             <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
         </exec>
-    </target>
+    </target>-->
 
     <fail message="Build failed">
         <condition>
