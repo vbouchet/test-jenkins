@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="test-jenkins" default="build">
+    <target name="build"
+            depends="prepare"
+            description=""/>
+
+    <target name="clean"
+            unless="clean.done"
+            description="Cleanup build artifacts">
+        <delete dir="build/logs" />
+        <property name="clean.done" value="true" />
+    </target>
+
+    <target name="prepare"
+            unless="prepare.done"
+            depends="clean"
+            description="Prepare for build">
+        <mkdir dir="build/logs" />
+        <touch file="build/logs/comment.md" />
+        <property name="prepare.done" value="true" />
+    </target>
+
+    <target name="phploc"
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
+        <exec executable="phploc">
+            <arg value="--log-csv" />
+            <arg path="build/logs/phploc.csv" />
+            <arg path="src/docroot/sites/all/modules/custom" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpcs" output="build/comment.md">
+            <arg value="--standard=Drupal" />
+            <arg value="--report=full" />
+            <arg path="src/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
+        </exec>
+    </target>
+</project>
