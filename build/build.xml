@@ -22,12 +22,8 @@
     </target>
 
     <target name="prepare"
-
+            depends="clean-dir, init-var, init-dir"
             description="Prepare for build">
-        <delete dir="${basedir}/build/logs" />
-        <mkdir dir="${basedir}/build/logs" />
-        <touch file="${basedir}/build/logs/comment.md" />
-        <property name="phpcs" value="1" />
     </target>
 
     <!--<target name="phploc"
