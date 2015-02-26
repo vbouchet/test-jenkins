@@ -23,9 +23,9 @@
     <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="phploc">
-            <arg value="--log-csv" />
-            <arg path="${basedir}/build/logs/phploc.csv" />
-            <arg path="${basedir}/src/docroot/sites/all/modules/custom" />
+            <!--<arg value="-log-csv" />
+            <arg path="${basedir}/build/logs/phploc.csv" />-->
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
         <echo message="Ici pour phploc" />
     </target>
