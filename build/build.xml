@@ -34,7 +34,7 @@
         <exec executable="phpcs" output="${basedir}/build/logs/comment.md">
             <arg value="--standard=Drupal" />
             <arg value="--report=full" />
-            <arg path="${basedir}/src/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
         </exec>
     </target>
 </project>
