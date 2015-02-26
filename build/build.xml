@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="test-jenkins" default="build">
+
+    <target name="build"
+            depends="prepare, phploc, phpcs, status"
+            description=""/>
+
+    <target name="clean-dir"
+            description="Cleanup build artifacts">
+        <delete dir="${basedir}/build/logs" />
+    </target>
+
+    <target name="init-dir"
+            description="Create directories and files">
+        <mkdir dir="${basedir}/build/logs" />
+        <touch file="${basedir}/build/logs/comment.md" />
+    </target>
+
+    <target name="prepare"
+            depends="clean-dir, init-dir"
+            description="Prepare for build">
+    </target>
+
+    <target name="phploc"
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
+        <exec executable="phploc">
+            <arg value="--log-csv" />
+            <arg value="${basedir}/build/logs/phploc.csv" />
+            <arg value="--names"/>
+            <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcs" failonerror="false">
+            <arg value="--standard=Drupal" />
+            <arg value="--report=full" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
+        </exec>
+    </target>
+
+    <target name="status"
+            description="Determine the build status">
+        <condition property="build.failed">
+            <isfailure code="${test.phpcs}" />
+        </condition>
+        <fail if="build.failed" message="Build failed here" />
+    </target>
+</project>
