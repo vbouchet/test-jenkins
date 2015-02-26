@@ -3,7 +3,7 @@
     <property name="test.phpcs" value="0" />
 
     <target name="build"
-            depends="prepare, phploc, status"
+            depends="prepare, phploc, phpcs, status"
             description=""/>
 
     <target name="clean-dir"
@@ -31,9 +31,8 @@
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <echo message="Ici pour phploc" />
     </target>
-<!--
+
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="phpcs">
@@ -41,7 +40,8 @@
             <arg value="-report=full" />
             <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
         </exec>
-    </target>-->
+    </target>
+
     <target name="status"
             description="Determine the build status">
         <condition property="build.failed">
