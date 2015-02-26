@@ -4,11 +4,14 @@
  * Code for the main module.
  */
 
+/**
+ * Implements hook_menu().
+ */
 function custom_main_menu() {
   $items = array();
 
   $items['test'] = array(
-   'title' => t('test'),
+    'title' => 'test',
     'type' => MENU_CALLBACK,
   );
 
