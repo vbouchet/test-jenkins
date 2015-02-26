@@ -11,8 +11,8 @@
 
     <target name="init-var"
             description="Init variables values">
-        <property name="phpcs" value="0" />
-        <echo message="${phpcs}" />
+        <property name="test.phpcs" value="0" />
+        <echo message="${test.phpcs}" />
     </target>
 
     <target name="init-dir"
@@ -47,11 +47,12 @@
         </exec>
     </target>-->
 
-    <fail message="Build failed">
-        <condition>
-            <not>
-                <equals arg1="${phpcs}" arg2="0"/>
-            </not>
-        </condition>
-    </fail>
+    <condition property="failed">
+        <not>
+            <equals arg1="${test.phpcs}" arg2="0" />
+        </not>
+    </condition>
+<echo message="${test.phpcs}" />
+<echo message="${failed}" />
+    <fail if="failed" message="Build failed here" />
 </project>
