@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
+    <property name="test.phpcs" value="0" />
+
     <target name="build"
             depends="prepare"
             description=""/>
@@ -9,12 +11,6 @@
         <delete dir="${basedir}/build/logs" />
     </target>
 
-    <target name="init-var"
-            description="Init variables values">
-        <property name="test.phpcs" value="0" />
-        <echo message="${test.phpcs}" />
-    </target>
-
     <target name="init-dir"
             description="Create directories and files">
         <mkdir dir="${basedir}/build/logs" />
@@ -22,7 +18,7 @@
     </target>
 
     <target name="prepare"
-            depends="clean-dir, init-var, init-dir"
+            depends="clean-dir, init-dir"
             description="Prepare for build">
     </target>
 
