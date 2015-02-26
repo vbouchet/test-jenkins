@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <property name="test.phpcs" value="0" />
-    <property name="build.failed" value="0" />
 
     <target name="build"
-            depends="prepare"
+            depends="prepare, status"
             description=""/>
 
     <target name="clean-dir"
@@ -43,13 +42,15 @@
             <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
         </exec>
     </target>-->
-
-    <condition property="build.failed">
-        <not>
-            <equals arg1="${test.phpcs}" arg2="0" />
-        </not>
-    </condition>
-<echo message="${test.phpcs}" />
-<echo message="${build.failed}" />
-    <fail if="build.failed" message="Build failed here" />
+    <target name="status"
+            description="Determine the build status">
+        <condition property="build.failed">
+            <not>
+                <equals arg1="${test.phpcs}" arg2="0" />
+            </not>
+        </condition>
+        <echo message="${test.phpcs}" />
+        <echo message="${build.failed}" />
+        <fail if="build.failed" message="Build failed here" />
+    </target>
 </project>
