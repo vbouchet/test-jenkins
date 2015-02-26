@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <property name="test.phpcs" value="0" />
+    <property name="build.failed" value="0" />
 
     <target name="build"
             depends="prepare"
@@ -43,12 +44,12 @@
         </exec>
     </target>-->
 
-    <condition property="failed">
+    <condition property="build.failed">
         <not>
             <equals arg1="${test.phpcs}" arg2="0" />
         </not>
     </condition>
 <echo message="${test.phpcs}" />
-<echo message="${failed}" />
-    <fail if="failed" message="Build failed here" />
+<echo message="${build.failed}" />
+    <fail if="build.failed" message="Build failed here" />
 </project>
