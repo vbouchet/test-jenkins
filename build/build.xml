@@ -4,23 +4,32 @@
             depends="prepare, phploc"
             description=""/>
 
-    <target name="clean"
+    <target name="clean-dir"
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
     </target>
 
-    <target name="prepare"
-            depends="clean"
-            description="Prepare for build">
+    <target name="init-var"
+            description="Init variables values">
+        <property name="phpcs" value="1" />
+    </target>
+
+    <target name="init-dir"
+            description="Create directories and files">
         <mkdir dir="${basedir}/build/logs" />
         <touch file="${basedir}/build/logs/comment.md" />
+    </target>
+
+    <target name="prepare"
+            depends="clean-dir, init-var"
+            description="Prepare for build">
     </target>
 
     <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="phploc">
-            <!--<arg value="-log-csv" />
-            <arg path="${basedir}/build/logs/phploc.csv" />-->
+            <arg value="--log-csv" />
+            <arg path="${basedir}/build/logs/phploc.csv" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
             <arg value="--names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
@@ -37,11 +46,11 @@
         </exec>
     </target>
 
-    <!--<fail message="Build failed">
+    <fail message="Build failed">
         <condition>
             <not>
                 <equals arg1="${phpcs}" arg2="0"/>
             </not>
         </condition>
-    </fail>-->
+    </fail>
 </project>
