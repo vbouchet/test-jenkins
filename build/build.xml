@@ -9,6 +9,8 @@
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
         <property name="clean.done" value="true" />
+        <echo message="Clean" />
+        <exec command="print ici"/>
     </target>
 
     <target name="prepare"
