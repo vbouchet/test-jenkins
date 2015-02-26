@@ -27,6 +27,7 @@
             <arg path="${basedir}/build/logs/phploc.csv" />
             <arg path="${basedir}/src/docroot/sites/all/modules/custom" />
         </exec>
+        <echo message="Ici pour phploc" />
     </target>
 
     <target name="phpcs"
