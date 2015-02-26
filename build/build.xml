@@ -39,7 +39,6 @@
             <arg value="--report=full" />
             <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
         </exec>
-        <echo message="${test.phpcs}" />
     </target>
 
     <target name="status"
@@ -47,8 +46,6 @@
         <condition property="build.failed">
             <isfailure code="${test.phpcs}" />
         </condition>
-        <echo message="${test.phpcs}" />
-        <echo message="${build.failed}" />
         <fail if="build.failed" message="Build failed here" />
     </target>
 </project>
