@@ -82,13 +82,13 @@
     </target>
 
     <target name="-phpcs-failed"
-            unless="test.phpcs"
+            if="test.phpcs"
             description="Update comment-summary with PHP-Codesniffer result and prepare the comment-phpcs file.">
         <echo message="Failed" />
     </target>
 
     <target name="-phpcs-succeed"
-            if="test.phpcs"
+            unless="test.phpcs"
             description="Update comment-summary with PHP-Codesniffer result and.">
         <echo message="Succeed" />
     </target>
@@ -120,7 +120,7 @@
         <condition property="build.failed">
             <or>
                 <isfailure code="${test.phpcs}" />
-                <isfailure code="${test.phpcpd}" />
+                <!--<isfailure code="${test.phpcpd}" />-->
             </or>
         </condition>
         <fail if="build.failed" />
