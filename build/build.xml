@@ -50,7 +50,6 @@
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <echo message="${test.phpcs}" />
         <condition property="test.phpcs.succeed">
             <equals arg1="${test.phpcs}" arg2="0" />
         </condition>
@@ -105,10 +104,16 @@
             <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <condition property="test.phpcpd.succeed">
+            <equals arg1="${test.phpcpd}" arg2="0" />
+        </condition>
+        <condition property="test.phpcpd.failed">
+            <equals arg1="${test.phpcpd}" arg2="1" />
+        </condition>
     </target>
 
     <target name="-phpcpd-failed"
-            if="test.phpcpd"
+            if="test.phpcpd.failed"
             description="Update comment-summary with Copy/Paste detector result and prepare the comment-phpcpd file.">
         <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
@@ -127,7 +132,7 @@
     </target>
 
     <target name="-phpcpd-succeed"
-            unless="test.phpcpd"
+            if="test.phpcpd.succeed"
             description="Update comment-summary with Copy/Paste detector result.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste${line.separator}</concat>
     </target>
