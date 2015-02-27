@@ -39,10 +39,10 @@
     </target>-->
 
     <target name="phpcs"
-            depends="run-phpcs, -phpcs-failed, -phpcs-succeed"
+            depends="-run-phpcs, -phpcs-failed, -phpcs-succeed"
             description="Run PHP_Codesniffer and update comments files" />
 
-    <target name="run-phpcs"
+    <target name="-run-phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs" output="${basedir}/build/logs/comment-phpcs.md" resultproperty="test.phpcs" failonerror="false">
             <arg value="--standard=Drupal" />
@@ -105,6 +105,7 @@
         <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
         </replace>
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Copy/Paste Detector{line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md" />
             <filterchain>
@@ -114,13 +115,13 @@
                 </linecontains>
             </filterchain>
         </concat>
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Copy/Paste{line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Copy/Paste${line.separator}</concat>
     </target>
 
     <target name="-phpcpd-succeed"
             unless="test.phpcpd"
             description="Update comment-summary with Copy/Paste detector result.">
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste{line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste${line.separator}</concat>
     </target>
 
     <target name="prepare-comment"
