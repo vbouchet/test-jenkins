@@ -74,13 +74,6 @@
                 </linecontains>
             </filterchain>
         </concat>
-        <replaceregexp byline="true">
-            <regexp pattern="OldProperty=(^Time[.*]Mb$)"/>
-            <substitution expression="NewProperty=\1"/>
-            <fileset dir=".">
-                <include name="*.properties"/>
-            </fileset>
-        </replaceregexp>
         <fail if="build.failed" />
     </target>
 </project>
