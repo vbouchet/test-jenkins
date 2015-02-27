@@ -14,6 +14,8 @@
             description="Create directories and files">
         <mkdir dir="${basedir}/build/logs" />
         <touch file="${basedir}/build/logs/comment.md" />
+        <touch file="${basedir}/build/logs/comment-phpcs.md" />
+        <touch file="${basedir}/build/logs/comment-phpcpd.md" />
     </target>
 
     <target name="prepare"
@@ -34,7 +36,7 @@
 
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcs" failonerror="false">
+        <exec executable="phpcs" output="${basedir}/build/logs/comment-phpcs.md" resultproperty="test.phpcs" failonerror="false">
             <arg value="--standard=Drupal" />
             <arg value="--report=full" />
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
@@ -44,7 +46,7 @@
 
     <target name="phpcpd"
             description="Find duplicated code.">
-        <exec executable="phpcpd" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcpd" failonerror="false">
+        <exec executable="phpcpd" output="${basedir}/build/logs/comment-phpcpd.md" resultproperty="test.phpcpd" failonerror="false">
             <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
@@ -58,6 +60,10 @@
                 <isfailure code="${test.phpcpd}" />
             </or>
         </condition>
-        <fail if="build.failed" message="Build failed here" />
+        <fail if="build.failed" />
+        <concat destfile="${basedir}/build/logs/comment.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md"/>
+            <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md"/>
+        </concat>
     </target>
 </project>
