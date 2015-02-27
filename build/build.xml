@@ -51,10 +51,16 @@
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
         <echo message="${test.phpcs}" />
+        <condition property="test.phpcs.succeed">
+            <equals arg1="${test.phpcs}" arg2="0" />
+        </condition>
+        <condition property="test.phpcs.failed">
+            <equals arg1="${test.phpcs}" arg2="1" />
+        </condition>
     </target>
 
     <target name="-phpcs-failed"
-            if="test.phpcs"
+            if="test.phpcs.failed"
             description="Update comment-summary with PHP-Codesniffer result and prepare the comment-phpcs file.">
         <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
             <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
@@ -84,7 +90,7 @@
     </target>
 
     <target name="-phpcs-succeed"
-            unless="test.phpcs"
+            if="test.phpcs.succeed"
             description="Update comment-summary with PHP-Codesniffer result.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Codesniffer${line.separator}</concat>
     </target>
