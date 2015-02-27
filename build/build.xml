@@ -2,7 +2,7 @@
 <project name="test-jenkins" default="build">
 
     <target name="build"
-            depends="prepare, phploc, phpcs, phpcpd, prepare-comment, status"
+            depends="prepare, phpcs, status"
             description=""/>
 
     <target name="clean-dir"
@@ -25,18 +25,22 @@
             description="Prepare for build">
     </target>
 
-    <target name="phploc"
+    <!--<target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="phploc">
-            <arg value="--log-csv" />
+            <arg value="-log-csv" />
             <arg value="${basedir}/build/logs/phploc.csv" />
-            <arg value="--names"/>
+            <arg value="-names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-    </target>
+    </target>-->
 
     <target name="phpcs"
+            depends="run-phpcs, -phpcs-failed, -phpcs-succeed"
+            description="Run PHP_Codesniffer and update comments files" />
+
+    <target name="run-phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs" output="${basedir}/build/logs/comment-phpcs.md" resultproperty="test.phpcs" failonerror="false">
             <arg value="--standard=Drupal" />
@@ -44,7 +48,7 @@
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <if>
+       <!-- <if>
             <equals arg1="${test.phpcs}" arg2="1" />
             <then>
                 <replace file="${basedir}/build/logs/comment-phpcs.md" value="+ ">
@@ -62,7 +66,7 @@
                             <contains value="Mb" />
                         </linecontains>
                         <linecontains negate="true">
-                            <contains value="------" />
+                            <contains value="-" />
                         </linecontains>
                         <linecontains negate="true">
                             <contains value=" ERROR(S) AFFECTING " />
@@ -74,16 +78,28 @@
             <else>
                 <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X]Codesniffer</concat>
             </else>
-        </if>
+        </if>-->
     </target>
 
-    <target name="phpcpd"
+    <target name="-phpcs-failed"
+            unless="test.phpcs"
+            description="Update comment-summary with PHP-Codesniffer result and prepare the comment-phpcs file.">
+        <echo message="Failed" />
+    </target>
+
+    <target name="-phpcs-succeed"
+            if="test.phpcs"
+            description="Update comment-summary with PHP-Codesniffer result and.">
+        <echo message="Succeed" />
+    </target>
+
+    <!--<target name="phpcpd"
             description="Find duplicated code.">
         <exec executable="phpcpd" output="${basedir}/build/logs/comment-phpcpd.md" resultproperty="test.phpcpd" failonerror="false">
-            <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
+            <arg value="-names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-    </target>
+    </target>-->
 
     <target name="prepare-comment"
             description="Prepare the comment file used on Github">
