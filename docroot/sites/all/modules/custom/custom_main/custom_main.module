@@ -4,6 +4,9 @@
  * Code for the main module.
  */
 
+/**
+ * Implements hook_menu().
+ */
 function custom_main_menu() {
   $items = array();
 
@@ -15,4 +18,78 @@ function custom_main_menu() {
   );
 
   return $items;
+}
+
+/**
+ * A super function from user_role_permissions().
+ */
+function custom_main_duplicated_1($roles = array()) {
+  $role_permissions = $fetch = array();
+
+  if ($roles) {
+    foreach ($roles as $rid => $name) {
+      if (isset($cache[$rid])) {
+        $role_permissions[$rid] = $cache[$rid];
+      }
+      else {
+        // Add this rid to the list of those needing to be fetched.
+        $fetch[] = $rid;
+        // Prepare in case no permissions are returned.
+        $cache[$rid] = array();
+      }
+    }
+
+    if ($fetch) {
+      // Get from the database permissions that were not in the static variable.
+      // Only role IDs with at least one permission assigned will return rows.
+      $result = db_query("SELECT rid, permission FROM {role_permission} WHERE rid IN (:fetch)", array(':fetch' => $fetch));
+
+      foreach ($result as $row) {
+        $cache[$row->rid][$row->permission] = TRUE;
+      }
+      foreach ($fetch as $rid) {
+        // For every rid, we know we at least assigned an empty array.
+        $role_permissions[$rid] = $cache[$rid];
+      }
+    }
+  }
+
+  return $role_permissions;
+}
+
+/**
+ * A duplicated function from user_role_permissions().
+ */
+function custom_main_duplicated_2($roles = array()) {
+  $role_permissions = $fetch = array();
+
+  if ($roles) {
+    foreach ($roles as $rid => $name) {
+      if (isset($cache[$rid])) {
+        $role_permissions[$rid] = $cache[$rid];
+      }
+      else {
+        // Add this rid to the list of those needing to be fetched.
+        $fetch[] = $rid;
+        // Prepare in case no permissions are returned.
+        $cache[$rid] = array();
+      }
+    }
+
+    if ($fetch) {
+      // Get from the database permissions that were not in the static variable.
+      // Only role IDs with at least one permission assigned will return rows.
+      $result = db_query("SELECT rid, permission FROM {role_permission} WHERE rid IN (:fetch)", array(':fetch' => $fetch));
+
+      foreach ($result as $row) {
+        $cache[$row->rid][$row->permission] = TRUE;
+      }
+      foreach ($fetch as $rid) {
+        // For every rid, we know we at least assigned an empty array.
+        $role_permissions[$rid] = $cache[$rid];
+      }
+    }
+  }
+
+  return $role_permissions;
 }
