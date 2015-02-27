@@ -104,8 +104,7 @@
 
     <target name="prepare-comment"
             description="Prepare the comment file used on Github">
-
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">-----------</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">${line.separator}-----------${line.separator}</concat>
         <!--<replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
         </replace>-->
