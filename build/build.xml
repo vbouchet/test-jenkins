@@ -105,7 +105,7 @@
         <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
         </replace>
-        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Copy/Paste Detector{line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Copy/Paste Detector${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md" />
             <filterchain>
