@@ -53,6 +53,9 @@
             <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
+            <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
+        </replace>
     </target>
 
     <target name="status"
@@ -68,7 +71,7 @@
             <filterchain>
                 <linecontains negate="true">
                     <contains value="Time:"/>
-                    <!--<contains value="Mb"/>-->
+                    <contains value="Mb"/>
                 </linecontains>
             </filterchain>
         </concat>
