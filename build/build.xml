@@ -37,6 +37,7 @@
         <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcs" failonerror="false">
             <arg value="--standard=Drupal" />
             <arg value="--report=full" />
+            <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
     </target>
