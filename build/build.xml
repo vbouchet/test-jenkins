@@ -2,7 +2,7 @@
 <project name="test-jenkins" default="build">
 
     <target name="build"
-            depends="prepare, phploc, phpcs, phpcpd, status"
+            depends="prepare, phploc, phpcs, phpcpd, prepare-comment, status"
             description=""/>
 
     <target name="clean-dir"
@@ -42,9 +42,6 @@
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
-            <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
-        </replace>
     </target>
 
     <target name="phpcpd"
@@ -53,9 +50,28 @@
             <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+    </target>
+
+    <target name="prepare-comment"
+            description="Prepare the comment file used on Github">
+        <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
+            <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
+        </replace>
         <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
         </replace>
+        <concat destfile="${basedir}/build/logs/comment.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="Time:" />
+                    <contains value="Mb" />
+                </linecontains>
+                <linecontains negate="true">
+                    <contains value="------" />
+                </linecontains>
+            </filterchain>
+        </concat>
     </target>
 
     <target name="status"
@@ -66,15 +82,6 @@
                 <isfailure code="${test.phpcpd}" />
             </or>
         </condition>
-        <concat destfile="${basedir}/build/logs/comment.md" append="true">
-            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
-            <filterchain>
-                <linecontains negate="true">
-                    <contains value="Time:"/>
-                    <contains value="Mb"/>
-                </linecontains>
-            </filterchain>
-        </concat>
         <fail if="build.failed" />
     </target>
 </project>
