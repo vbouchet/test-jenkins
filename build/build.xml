@@ -74,6 +74,7 @@
         <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
                        match="(----*)"
                        replace="${line.separator}"
+                       byline="true"
                 />
         <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Codesniffer${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
