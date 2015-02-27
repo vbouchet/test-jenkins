@@ -21,38 +21,71 @@ function custom_main_menu() {
 }
 
 /**
- * A super function from user_role_permissions().
+ * A super function.
  */
-function custom_main_duplicated_1($roles = array()) {
-  $role_permissions = $fetch = array();
+function custom_main_complex_cache_get_id($conf, $display, $args, $contexts, $pane) {
+  $id = 'panels_complex_cache';
 
-  if ($roles) {
-    foreach ($roles as $rid => $name) {
-      if (isset($cache[$rid])) {
-        $role_permissions[$rid] = $cache[$rid];
-      }
-      else {
-        // Add this rid to the list of those needing to be fetched.
-        $fetch[] = $rid;
-        // Prepare in case no permissions are returned.
-        $cache[$rid] = array();
-      }
-    }
-
-    if ($fetch) {
-      // Get from the database permissions that were not in the static variable.
-      // Only role IDs with at least one permission assigned will return rows.
-      $result = db_query("SELECT rid, permission FROM {role_permission} WHERE rid IN (:fetch)", array(':fetch' => $fetch));
-
-      foreach ($result as $row) {
-        $cache[$row->rid][$row->permission] = TRUE;
-      }
-      foreach ($fetch as $rid) {
-        // For every rid, we know we at least assigned an empty array.
-        $role_permissions[$rid] = $cache[$rid];
-      }
-    }
+  // If the panel is stored in the database it'll have a numeric did value.
+  if (is_numeric($display->did)) {
+    $id .= ':' . $display->did;
+  }
+  // Exported panels won't have a numeric did but may have a usable cache_key.
+  elseif (!empty($display->cache_key)) {
+    $id .= ':' . str_replace('panel_context:', '', $display->cache_key);
+  }
+  // Alternatively use the css_id.
+  elseif (!empty($display->css_id)) {
+    $id .= ':' . $display->css_id;
+  }
+  // Failover to just appending the did, which may be the completely unusable
+  // string 'new'.
+  else {
+    $id .= ':' . $display->did;
   }
 
-  return $role_permissions;
+  if ($pane) {
+    $id .= ':' . $pane->pid;
+  }
+
+  if (user_access('view pane admin links')) {
+    $id .= ':admin';
+  }
+
+  // Get the current node id.
+  $id .= ':' . $args[0];
+
+  // Get the current visible lineup.
+  global $user;
+  $lineup = 'acquisition';
+  if (isset($user->data['customer'])) {
+    $sub_index = (isset($user->data['customer']->current_subscription_index)) ? $user->data['customer']->current_subscription_index : 0;
+
+    if (isset($user->data['customer']->subscriptions[$sub_index]->subscription->permissions->renewal)
+      && $user->data['customer']->subscriptions[$sub_index]->subscription->permissions->renewal) {
+      $lineup = 'renewal';
+    }
+  }
+  elseif (isset($_SESSION['customer']['lineup'])) {
+    $lineup = strtolower($_SESSION['customer']['lineup']);
+  }
+  $id .= ':' . $lineup;
+
+  // Get the current dealership.
+  $dealer_tid = variable_get('tmobile_customer_dealership_tid', NULL);
+  if (!empty($_SESSION['dealership_tid'])) {
+    $dealer_tid = $_SESSION['dealership_tid'];
+  }
+  $id .= ':' . $dealer_tid;
+
+  if (module_exists('locale')) {
+    global $language;
+    $id .= ':' . $language->language;
+  }
+
+  if (!empty($pane->configuration['use_pager']) && !empty($_GET['page'])) {
+    $id .= ':p' . check_plain($_GET['page']);
+  }
+
+  return $id;
 }
