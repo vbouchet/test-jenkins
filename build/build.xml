@@ -42,6 +42,9 @@
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
+            <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
+        </replace>
     </target>
 
     <target name="phpcpd"
