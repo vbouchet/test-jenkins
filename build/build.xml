@@ -55,12 +55,16 @@
     <target name="-phpcs-failed"
             if="test.phpcs"
             description="Update comment-summary with PHP-Codesniffer result and prepare the comment-phpcs file.">
-        <replace file="${basedir}/build/logs/comment-phpcs.md" value="+ ">
+        <!--<replace file="${basedir}/build/logs/comment-phpcs.md" value="+ ">
             <replacetoken><![CDATA[FILE: ...rkspace/docroot/sites/all/]]></replacetoken>
-        </replace>
+        </replace>-->
         <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
             <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
         </replace>
+        <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
+                       match="(FILE: ...rkspace//docroot//sites//all//)"
+                       replace="+ "
+                       byline="true" />
         <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
                        match="(----*)"
                        replace="${line.separator}"
