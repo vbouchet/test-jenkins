@@ -67,10 +67,8 @@
             <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
             <filterchain>
                 <linecontains negate="true">
-                    <and>
-                        <contains value="Time"/>
-                        <contains value="Mb"/>
-                    </and>
+                    <contains value="Time:"/>
+                    <!--<contains value="Mb"/>-->
                 </linecontains>
             </filterchain>
         </concat>
