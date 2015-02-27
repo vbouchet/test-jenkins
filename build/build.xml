@@ -65,7 +65,22 @@
         </condition>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
+            <filterchain>
+                <linecontains negate="true">
+                    <and>
+                        <contains value="Time"/>
+                        <contains value="Mb"/>
+                    </and>
+                </linecontains>
+            </filterchain>
         </concat>
+        <replaceregexp byline="true">
+            <regexp pattern="OldProperty=(^Time[.*]Mb$)"/>
+            <substitution expression="NewProperty=\1"/>
+            <fileset dir=".">
+                <include name="*.properties"/>
+            </fileset>
+        </replaceregexp>
         <fail if="build.failed" />
     </target>
 </project>
