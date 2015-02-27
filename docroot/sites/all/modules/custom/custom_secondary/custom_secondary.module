@@ -1,29 +1,13 @@
 <?php
 /**
  * @file
- * Code for the main module.
+ * Code for the secondary module.
  */
-
-/**
- * Implements hook_menu().
- */
-function custom_main_menu() {
-  $items = array();
-
-  $items['test'] = array(
-    'title' => 'test',
-    'description' => 'A test menu item',
-    'weight' => 16,
-    'type' => MENU_CALLBACK,
-  );
-
-  return $items;
-}
 
 /**
  * A super function from user_role_permissions().
  */
-function custom_main_duplicated_1($roles = array()) {
+function custom_secondary_duplicated($roles = array()) {
   $role_permissions = $fetch = array();
 
   if ($roles) {
