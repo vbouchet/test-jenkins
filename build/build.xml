@@ -44,7 +44,7 @@
 
     <target name="phpcpd"
             description="Find duplicated code.">
-        <exec executable="phpcpd">
+        <exec executable="phpcpd" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcpd" failonerror="false">
             <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
@@ -53,7 +53,10 @@
     <target name="status"
             description="Determine the build status">
         <condition property="build.failed">
-            <isfailure code="${test.phpcs}" />
+            <or>
+                <isfailure code="${test.phpcs}" />
+                <isfailure code="${test.phpcpd}" />
+            </or>
         </condition>
         <fail if="build.failed" message="Build failed here" />
     </target>
