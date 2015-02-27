@@ -18,6 +18,8 @@
         <touch file="${basedir}/build/logs/comment-body.md" />
         <touch file="${basedir}/build/logs/comment-phpcs.md" />
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">## Summary</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">## Details</concat>
     </target>
 
     <target name="prepare"
@@ -78,20 +80,17 @@
                     <contains value="Mb" />
                 </linecontains>
                 <linecontains negate="true">
-                    <contains value="-------" />
-                </linecontains>
-                <linecontains negate="true">
                     <contains value=" ERROR(S) AFFECTING " />
                 </linecontains>
             </filterchain>
         </concat>
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ]Codesniffer</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Codesniffer</concat>
     </target>
 
     <target name="-phpcs-succeed"
             unless="test.phpcs"
             description="Update comment-summary with PHP-Codesniffer result and.">
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X]Codesniffer</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Codesniffer</concat>
     </target>
 
     <!--<target name="phpcpd"
