@@ -54,12 +54,17 @@
 
     <target name="prepare-comment"
             description="Prepare the comment file used on Github">
+        <replace file="${basedir}/build/logs/comment-phpcs.md" value="+ ">
+            <replacetoken><![CDATA[FILE: ..rkspace/docroot/sites/all/]]></replacetoken>
+        </replace>
         <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
             <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
         </replace>
         <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
             <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
         </replace>
+        <concat append="true" destfile="${basedir}/build/logs/comment-phpcs.md">### Codesniffer</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-phpcpd.md">### Copy/Paste detector</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
             <filterchain>
@@ -69,6 +74,9 @@
                 </linecontains>
                 <linecontains negate="true">
                     <contains value="------" />
+                </linecontains>
+                <linecontains negate="true">
+                    <contains value=" ERROR(S) AFFECTING " />
                 </linecontains>
             </filterchain>
         </concat>
