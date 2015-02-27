@@ -117,6 +117,7 @@
     </target>
 
     <target name="status"
+            depends="prepare-comment"
             description="Determine the build status">
         <condition property="build.failed">
             <or>
