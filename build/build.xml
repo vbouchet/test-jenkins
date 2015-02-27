@@ -60,9 +60,9 @@
                 <isfailure code="${test.phpcpd}" />
             </or>
         </condition>
-        <fail if="build.failed" />
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
         </concat>
+        <fail if="build.failed" />
     </target>
 </project>
