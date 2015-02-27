@@ -2,7 +2,7 @@
 <project name="test-jenkins" default="build">
 
     <target name="build"
-            depends="prepare, phpcs, status"
+            depends="prepare, phpcs, phpcpd, status"
             description=""/>
 
     <target name="clean-dir"
@@ -50,16 +50,6 @@
             <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-       <!-- <if>
-            <equals arg1="${test.phpcs}" arg2="1" />
-            <then>
-
-
-            </then>
-            <else>
-
-            </else>
-        </if>-->
     </target>
 
     <target name="-phpcs-failed"
@@ -74,8 +64,7 @@
         <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
                        match="(----*)"
                        replace="${line.separator}"
-                       byline="true"
-                />
+                       byline="true" />
         <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Codesniffer${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpcs.md" />
@@ -94,26 +83,49 @@
 
     <target name="-phpcs-succeed"
             unless="test.phpcs"
-            description="Update comment-summary with PHP-Codesniffer result and.">
+            description="Update comment-summary with PHP-Codesniffer result.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Codesniffer${line.separator}</concat>
     </target>
 
-    <!--<target name="phpcpd"
+    <target name="phpcpd"
+            depends="-run-phpcpd, -phpcpd-failed, -phpcpd-succeed"
+            description="Run PHP_Codesniffer and update comments files" />
+
+    <target name="-run-phpcpd"
             description="Find duplicated code.">
         <exec executable="phpcpd" output="${basedir}/build/logs/comment-phpcpd.md" resultproperty="test.phpcpd" failonerror="false">
-            <arg value="-names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
+            <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-    </target>-->
+    </target>
+
+    <target name="-phpcpd-failed"
+            if="test.phpcpd"
+            description="Update comment-summary with Copy/Paste detector result and prepare the comment-phpcpd file.">
+        <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
+            <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
+        </replace>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md" />
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="Time:" />
+                    <contains value="Mb" />
+                </linecontains>
+            </filterchain>
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Copy/Paste{line.separator}</concat>
+    </target>
+
+    <target name="-phpcpd-succeed"
+            unless="test.phpcpd"
+            description="Update comment-summary with Copy/Paste detector result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste{line.separator}</concat>
+    </target>
 
     <target name="prepare-comment"
             description="Prepare the comment file used on Github">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">${line.separator}-----------${line.separator}</concat>
-        <!--<replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
-            <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
-        </replace>-->
-        <!--<concat append="true" destfile="${basedir}/build/logs/comment-phpcs.md">### Codesniffer</concat>
-        <concat append="true" destfile="${basedir}/build/logs/comment-phpcpd.md">### Copy/Paste detector</concat>-->
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-summary.md, comment-body.md"/>
         </concat>
@@ -125,7 +137,7 @@
         <condition property="build.failed">
             <or>
                 <isfailure code="${test.phpcs}" />
-                <!--<isfailure code="${test.phpcpd}" />-->
+                <isfailure code="${test.phpcpd}" />
             </or>
         </condition>
         <fail if="build.failed" />
