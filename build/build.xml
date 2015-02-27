@@ -62,8 +62,7 @@
         </condition>
         <fail if="build.failed" />
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
-            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md"/>
-            <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md"/>
+            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md, comment-phpcpd.md"/>
         </concat>
     </target>
 </project>
