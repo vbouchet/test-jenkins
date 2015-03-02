@@ -158,6 +158,7 @@
 
     <target name="-prepare-comment"
             description="Prepare the comment file used on Github">
+        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-summary.md" />
         <concat append="true" destfile="${basedir}/build/logs/comment.md">## Summary${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-summary.md"/>
@@ -167,6 +168,7 @@
     <target name="-prepare-comment-failed"
             if="build.failed"
             description="Update the comment with details in case of build failure.">
+        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
         <concat append="true" destfile="${basedir}/build/logs/comment.md">${line.separator}-----------${line.separator}</concat>
         <concat append="true" destfile="${basedir}/build/logs/comment.md">## Details${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
