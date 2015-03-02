@@ -4,9 +4,7 @@
  * Code for the main module.
  */
 
-/**
- * Implements hook_menu().
- */
+
 function custom_main_menu() {
   $items = array();
 
