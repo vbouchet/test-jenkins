@@ -21,6 +21,7 @@
         <touch file="${basedir}/build/logs/comment.md" />
         <touch file="${basedir}/build/logs/comment-summary.md" />
         <touch file="${basedir}/build/logs/comment-body.md" />
+        <touch file="${basedir}/build/logs/comment-body-trimmed.md" />
         <touch file="${basedir}/build/logs/comment-phpcs.md" />
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
     </target>
