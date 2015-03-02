@@ -152,7 +152,8 @@
             if="build.failed">
         <loadfile property="comment-body" srcFile="${basedir}/build/logs/comment-body.md"/>
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@${commitAuthor} failed&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
-        <exec command="curl -F file='${basedir}/build/logs/comment-body.md' -F channels=general -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
+        <exec command="curl -F file=${basedir}/build/logs/comment-body.md -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
+        <echo message="${basedir}/build/logs/comment-body.md" />
     </target>
 
     <target name="-prepare-comment"
