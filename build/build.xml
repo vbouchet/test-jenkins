@@ -41,7 +41,7 @@
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
-        <exec command="arr=$(echo $test.phploc | tr ',' '\n')" />
+        <exec command="arr=$(echo $TEST.PHPLOC | tr ',' '\n')" />
         <echo message="${test.phploc}" />
         <echo message="${arr[0]}" />
     </target>
