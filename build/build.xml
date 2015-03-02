@@ -38,7 +38,10 @@
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
+        <exec executable="sed">
+            <arg value="-i -e '1d' ${basedir}/build/logs/phploc.csv" />
+        </exec>
+        <!--<exec command="sed -i 's/\"//g' ${basedir}/build/logs/phploc.csv" />-->
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
         <echo message="${test.phploc}" />
     </target>
@@ -157,7 +160,6 @@
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
-        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesnt succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
