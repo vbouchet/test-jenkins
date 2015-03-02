@@ -156,7 +156,7 @@
             description="Send notification to Slack in case of failure"
             if="build.failed">
         <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesn't succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesnt succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-prepare-comment"
