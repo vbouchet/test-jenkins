@@ -41,11 +41,10 @@
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
-        <property name="prefix_str" value=""/>
+        <property name="prefix_str" value="test.phploc."/>
         <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>
         <echo message="${test.phploc}" />
-        <echo message="${prefix_str}" />
-        <echoproperties prefix="${prefix_str}"/>
+        <echo message="${test.phploc.0}" />
     </target>
 
     <target name="phpcs"
