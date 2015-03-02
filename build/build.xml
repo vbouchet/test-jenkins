@@ -46,7 +46,7 @@
         <property name="prefix_str" value="test.phploc."/>
         <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>
         <echo message="${test.phploc}" />
-        <echo message="(${test.phploc.4}*100)/${test.phploc.2}" />
+        <echo message="$((${test.phploc.4}*100)/${test.phploc.2})" />
     </target>
 
     <target name="phpcs"
