@@ -144,14 +144,14 @@
     <target name="-slack-notification-succeed"
             description="Send notification to Slack in case of success"
             if="build.succeed">
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@Vincent: Please review this PR.&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@Vincent: Please review this PR.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
         <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: Test failed. Please update your code.&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: Test failed. Please update your code.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-prepare-comment"
