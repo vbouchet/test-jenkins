@@ -2,7 +2,7 @@
 <project name="test-jenkins" default="build">
 
     <target name="build"
-            depends="prepare, phpcs, phpcpd, finalize"
+            depends="prepare, phpcs, phpcpd, phploc, finalize"
             description=""/>
 
     <target name="prepare"
@@ -25,16 +25,21 @@
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
     </target>
 
-    <!--<target name="phploc"
-            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
-        <exec executable="phploc">
-            <arg value="-log-csv" />
-            <arg value="${basedir}/build/logs/phploc.csv" />
-            <arg value="-names"/>
+    <target name="phploc"
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line."
+            depends="-run-phploc" />
+
+    <target name="-run-phploc"
+            description="Get statistics on code and prepare variable for testing.">
+        <exec executable="phploc" resultproperty="test.phploc" failonerror="false">
+            <!--<arg value="-log-csv" />
+            <arg value="${basedir}/build/logs/phploc.csv" />-->
+            <arg value="--names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-    </target>-->
+        <echo message="${test.phploc}" />
+    </target>
 
     <target name="phpcs"
             depends="-run-phpcs, -phpcs-failed, -phpcs-succeed"
@@ -144,14 +149,14 @@
     <target name="-slack-notification-succeed"
             description="Send notification to Slack in case of success"
             if="build.succeed">
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@Vincent: Please review this PR.&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@TechLead: This PR is ready for review.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
         <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: Test failed. Please update your code.&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesn't succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-prepare-comment"
