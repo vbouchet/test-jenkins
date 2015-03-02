@@ -2,15 +2,20 @@
 <project name="test-jenkins" default="build">
 
     <target name="build"
-            depends="prepare, phpcs, phpcpd, status"
+            depends="prepare, phpcs, phpcpd, finalize"
             description=""/>
 
-    <target name="clean-dir"
+    <target name="prepare"
+            depends="-clean-dir, -init-dir"
+            description="Prepare for build">
+    </target>
+
+    <target name="-clean-dir"
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
     </target>
 
-    <target name="init-dir"
+    <target name="-init-dir"
             description="Create directories and files">
         <mkdir dir="${basedir}/build/logs" />
         <touch file="${basedir}/build/logs/comment.md" />
@@ -18,13 +23,6 @@
         <touch file="${basedir}/build/logs/comment-body.md" />
         <touch file="${basedir}/build/logs/comment-phpcs.md" />
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">## Summary${line.separator}</concat>
-        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">## Details${line.separator}</concat>
-    </target>
-
-    <target name="prepare"
-            depends="clean-dir, init-dir"
-            description="Prepare for build">
     </target>
 
     <!--<target name="phploc"
@@ -137,23 +135,37 @@
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste${line.separator}</concat>
     </target>
 
-    <target name="prepare-comment"
+    <target name="finalize"
+            depends="-define-status, -prepare-comment, -prepare-comment-failed"
+            description="Determine the build status">
+        <fail if="build.failed" />
+    </target>
+
+    <target name="-prepare-comment"
             description="Prepare the comment file used on Github">
-        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">${line.separator}-----------${line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">## Summary${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
-            <filelist dir="${basedir}/build/logs" files="comment-summary.md, comment-body.md"/>
+            <filelist dir="${basedir}/build/logs" files="comment-summary.md"/>
         </concat>
     </target>
 
-    <target name="status"
-            depends="prepare-comment"
-            description="Determine the build status">
+    <target name="-prepare-comment-failed"
+            if="build.failed"
+            description="Update the comment with details in case of build failure.">
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">${line.separator}-----------${line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">## Details${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-body.md"/>
+        </concat>
+    </target>
+
+    <target name="-define-status"
+            description="Set the build.status value to determine the build status.">
         <condition property="build.failed">
             <or>
                 <isfailure code="${test.phpcs}" />
                 <isfailure code="${test.phpcpd}" />
             </or>
         </condition>
-        <fail if="build.failed" />
     </target>
 </project>
