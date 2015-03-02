@@ -150,15 +150,13 @@
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
-        <loadfile property="comment-body" srcFile="${basedir}/build/logs/comment-body.md"/>
+        <exec command="sed '/^\s*$/d' ${basedir}/build/logs/comment-body.md > ${basedir}/build/logs/comment-body-trimmed.md" />
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@${commitAuthor} failed&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
-        <exec command="curl -F file=@${basedir}/build/logs/comment-body.md -F channels=C03S50YCM -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
-        <echo message="${basedir}/build/logs/comment-body.md" />
+        <exec command="curl -F file=@${basedir}/build/logs/comment-body-trimmed.md -F channels=C03S50YCM -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
     </target>
 
     <target name="-prepare-comment"
             description="Prepare the comment file used on Github">
-        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-summary.md" />
         <concat append="true" destfile="${basedir}/build/logs/comment.md">## Summary${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-summary.md"/>
@@ -168,7 +166,6 @@
     <target name="-prepare-comment-failed"
             if="build.failed"
             description="Update the comment with details in case of build failure.">
-        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
         <concat append="true" destfile="${basedir}/build/logs/comment.md">${line.separator}-----------${line.separator}</concat>
         <concat append="true" destfile="${basedir}/build/logs/comment.md">## Details${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment.md" append="true">
