@@ -151,9 +151,9 @@
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
-        <exec command="sed '/^\s*$/d' ${basedir}/build/logs/comment-body.md > ${basedir}/build/logs/comment-body-trimmed.md" />
+        <exec command="sed -i '/^\s*$/d' ${basedir}/build/logs/comment-body.md" />
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@${commitAuthor} failed&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
-        <exec command="curl -F file=@${basedir}/build/logs/comment-body-trimmed.md -F channels=C03S50YCM -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
+        <exec command="curl -F file=@${basedir}/build/logs/comment-body.md -F channels=C03S50YCM -F token=xoxp-3889032375-3889032391-3890039067-ccecaa https://slack.com/api/files.upload" />
     </target>
 
     <target name="-prepare-comment"
