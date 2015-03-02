@@ -31,14 +31,14 @@
 
     <target name="-run-phploc"
             description="Get statistics on code and prepare variable for testing.">
-        <exec executable="phploc" resultproperty="test.phploc" failonerror="false">
-            <!--<arg value="-log-csv" />
-            <arg value="${basedir}/build/logs/phploc.csv" />-->
+        <exec executable="phploc" failonerror="false">
+            <arg value="--log-csv" />
+            <arg value="${basedir}/build/logs/phploc.csv" />
             <arg value="--names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <echo message="${test.phploc}" />
+        <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
     </target>
 
     <target name="phpcs"
