@@ -38,6 +38,8 @@
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <loadfile property="test.phploc.previous" srcFile="${basedir}/build/logs/phploc.csv" />
+        <echo message="${test.phploc.previous}" />
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
