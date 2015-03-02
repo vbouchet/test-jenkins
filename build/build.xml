@@ -46,7 +46,7 @@
         <property name="prefix_str" value="test.phploc."/>
         <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>
         <echo message="${test.phploc}" />
-        <exec command="(${test.phploc.4}*100)/${test.phploc.2}" outputproperty="test.test"/>
+        <exec command="echo '${test.phploc.4}*100)/${test.phploc.2}' | bc -l" outputproperty="test.test"/>
         <echo message="${test.test}" />
     </target>
 
