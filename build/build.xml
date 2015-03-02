@@ -142,14 +142,12 @@
     </target>
 
     <target name="-slack-notification-succeed"
-            description="Send notification to Slack in case of success"
-            if="build.succeed">
+            description="Send notification to Slack in case of success">
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@Vincent &lt;a href=&quot;${pullLink}&quot;&gt;${pullTitle}&lt;/a&gt; is ready for merge.&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
     <target name="-slack-notification-failed"
-            description="Send notification to Slack in case of failure"
-            if="build.succeed">
+            description="Send notification to Slack in case of failure">
         <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@${commitAuthor} &lt;a href=&quot;${pullLink}&quot;&gt;${pullTitle}&lt;/a&gt; need work.&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
     </target>
 
