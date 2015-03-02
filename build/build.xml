@@ -40,7 +40,7 @@
         </exec>
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
-        <echo message="${test.phploc" />
+        <echo message="${test.phploc}" />
     </target>
 
     <target name="phpcs"
