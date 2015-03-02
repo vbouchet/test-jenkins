@@ -45,6 +45,7 @@
         <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>
         <echo message="${test.phploc}" />
         <echo message="${prefix_str}" />
+        <echoproperties prefix="${prefix_str}"/>
     </target>
 
     <target name="phpcs"
