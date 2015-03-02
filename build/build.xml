@@ -138,7 +138,7 @@
     <target name="finalize"
             depends="-define-status, -prepare-comment, -prepare-comment-failed"
             description="Determine the build status">
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;This is posted to #general and comes from a bot named webhookbot.&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;username&quot;: &quot;Jenkins CI&quot;, &quot;text&quot;: &quot;@${commitAuthor} Failed: ${build.failed} Succeed: ${build.succeed}&quot;, &quot;icon_emoji&quot;: &quot;:slack:&quot;}' https://hooks.slack.com/services/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" />
         <fail if="build.failed" />
     </target>
 
@@ -167,6 +167,9 @@
                 <isfailure code="${test.phpcs}" />
                 <isfailure code="${test.phpcpd}" />
             </or>
+        </condition>
+        <condition property="build.succeed">
+            <isfalse value="${build.failed}" />
         </condition>
     </target>
 </project>
