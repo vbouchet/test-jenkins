@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phpcs, phpcpd, phploc, finalize"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, finalize"
             description=""/>
 
     <target name="prepare"
@@ -22,6 +22,7 @@
         <touch file="${basedir}/build/logs/comment-body.md" />
         <touch file="${basedir}/build/logs/comment-phpcs.md" />
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
+        <touch file="${basedir}/build/logs/comment-phpmd.md" />
     </target>
 
     <target name="phploc"
@@ -143,6 +144,42 @@
             if="test.phpcpd.succeed"
             description="Update comment-summary with Copy/Paste detector result.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste${line.separator}</concat>
+    </target>
+
+    <target name="phpmd"
+            depends="-run-phpmd, -phpmd-failed, -phpmd-succeed"
+            description="Run PHP Mess Detector and update comments files" />
+
+    <target name="-run-phpmd"
+            description="Detect mess in code.">
+        <exec executable="phpmd" output="${basedir}/build/logs/comment-phpmd.md" resultproperty="test.phpmd" failonerror="false">
+            <arg value="--suffixes='php,inc,install,module,test,theme,engine'" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
+            <arg value="text" />
+            <arg value="codesize,design,naming,unusedcode" />
+        </exec>
+        <condition property="test.phpmd.succeed">
+            <equals arg1="${test.phpmd}" arg2="0" />
+        </condition>
+        <condition property="test.phpmd.failed">
+            <equals arg1="${test.phpmd}" arg2="1" />
+        </condition>
+    </target>
+
+    <target name="-phpmd-failed"
+            if="test.phpmd.failed"
+            description="Update comment-summary with Mess detector result and prepare the comment-phpmd file.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Mess Detector${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpmd.md" />
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Mess Detector${line.separator}</concat>
+    </target>
+
+    <target name="-phpmd-succeed"
+            if="test.phpmd.succeed"
+            description="Update comment-summary with Mess detector result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Mess Detector${line.separator}</concat>
     </target>
 
     <target name="finalize"
