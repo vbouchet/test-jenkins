@@ -234,6 +234,7 @@
             <or>
                 <isfailure code="${test.phpcs}" />
                 <isfailure code="${test.phpcpd}" />
+                <isfailure code="${test.phpmd}" />
             </or>
         </condition>
         <condition property="build.succeed">
