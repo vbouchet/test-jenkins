@@ -165,7 +165,10 @@
             <equals arg1="${test.phpmd}" arg2="0" />
         </condition>
         <condition property="test.phpmd.failed">
-            <equals arg1="${test.phpmd}" arg2="1" />
+            <or>
+                <equals arg1="${test.phpmd}" arg2="1" />
+                <equals arg1="${test.phpmd}" arg2="2" />
+            </or>
         </condition>
     </target>
 
