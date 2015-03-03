@@ -54,7 +54,14 @@
         <echo message="${test.phploc}" />
         <exec command="calc '(${test.phploc.4}*100)/${test.phploc.2}'" outputproperty="test.test"/>
         <echo message="${test.test}" />
-        <condition property="test"><isgreaterthan arg1="test.test" arg2="20" /></condition>
+        <if>
+            <bool>
+                <isgreaterthan arg1="test.test" arg2="20" />
+            </bool>
+            <then>
+                <property name="test" value="1" />
+            </then>
+        </if>
         <echo message="${test}" />
     </target>
 
