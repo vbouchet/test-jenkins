@@ -152,11 +152,14 @@
 
     <target name="-run-phpmd"
             description="Detect mess in code.">
-        <exec executable="phpmd" output="${basedir}/build/logs/comment-phpmd.md" resultproperty="test.phpmd" failonerror="false">
+        <exec executable="phpmd" resultproperty="test.phpmd" failonerror="false">
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
             <arg value="text" />
             <arg value="codesize,design,naming,unusedcode" />
-            <arg value="--suffixes php,inc,install,module,test,theme,engine" />
+            <arg value="--suffixes" />
+            <arg value="php,inc,install,module,test,theme,engine" />
+            <arg value="--reportfile" />
+            <arg path="${basedir}/build/logs/comment-phpmd.md" />
         </exec>
         <condition property="test.phpmd.succeed">
             <equals arg1="${test.phpmd}" arg2="0" />
