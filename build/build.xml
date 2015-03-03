@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
-    <!--<taskdef resource="net/sf/antcontrib/antlib xml"/>-->
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-        <classpath>
-            <pathelement location="/usr/share/ant/lib/ant-contrib-1.0b3.jar" />
-        </classpath>
-    </taskdef>
-
     <target name="build"
             depends="prepare, phpcs, phpcpd, phploc, finalize"
             description=""/>
@@ -45,22 +38,12 @@
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
         <loadfile property="test.phploc.previous" srcFile="${basedir}/build/logs/phploc.csv" />
-        <echo message="${test.phploc.previous}" />
+        <!--<echo message="${test.phploc.previous}" />
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
         <property name="prefix_str" value="test.phploc."/>
-        <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>
-        <echo message="${test.phploc}" />
-        <exec command="calc '(${test.phploc.4}*100)/${test.phploc.2}'" outputproperty="test.test"/>
-        <echo message="${test.test}" />
-        <if>
-            <isgreaterthan arg1="test.test" arg2="20" />
-            <then>
-                <property name="test" value="1" />
-            </then>
-        </if>
-        <echo message="${test}" />
+        <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>-->
     </target>
 
     <target name="phpcs"
