@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="/usr/share/java/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
     <target name="build"
             depends="prepare, phpcs, phpcpd, phploc, finalize"
             description=""/>
@@ -48,6 +54,8 @@
         <echo message="${test.phploc}" />
         <exec command="calc '(${test.phploc.4}*100)/${test.phploc.2}'" outputproperty="test.test"/>
         <echo message="${test.test}" />
+        <condition property="test"><isgreaterthan arg1="test.test" arg2="20" /></condition>
+        <echo message="${test}" />
     </target>
 
     <target name="phpcs"
