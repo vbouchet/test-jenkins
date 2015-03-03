@@ -4,7 +4,9 @@
  * Code for the main module.
  */
 
-
+/**
+ * Implements hook_menu().
+ */
 function custom_main_menu() {
   $items = array();
 
@@ -88,6 +90,9 @@ function custom_main_complex_cache_get_id($conf, $display, $args, $contexts, $pa
   return $id;
 }
 
+/**
+ * A super function.
+ */
 function custom_main_dealership_thank_you() {
   global $user;
 
