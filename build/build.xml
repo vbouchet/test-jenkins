@@ -175,6 +175,10 @@
     <target name="-phpmd-failed"
             if="test.phpmd.failed"
             description="Update comment-summary with Mess detector result and prepare the comment-phpmd file.">
+        <replaceregexp file="${basedir}/build/logs/comment-phpmd.md"
+                       match="(/var/lib/(.*)sites/all/)"
+                       replace="+ "
+                       byline="true" />
         <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Mess Detector${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-phpmd.md" />
