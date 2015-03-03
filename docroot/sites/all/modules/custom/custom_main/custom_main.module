@@ -87,3 +87,69 @@ function custom_main_complex_cache_get_id($conf, $display, $args, $contexts, $pa
 
   return $id;
 }
+
+function custom_main_dealership_thank_you() {
+  global $user;
+
+  // Confirm what needs to be sent to sugar CRM request as params.
+  // That thing needs to add in session variable on order checkout.
+  $items = array();
+  $order_number = '';
+  $status = '';
+  if (isset($_SESSION['tmobile_order_entity']['order_response'])
+    && $response = json_decode($_SESSION['tmobile_order_entity']['order_response'])) {
+
+    if (!$response->result_code) {
+      $data = array(
+        'order_number' => $response->order_number,
+        'dealer_number' => $_SESSION['dealership_id'],
+        'order_type' => $_SESSION['tmobile_order_entity']['order_type'],
+        'external_order_reference' => '',
+      );
+
+      $order_number = $response->order_number;
+      $endpoint = variable_get('tmobile_sugarcrm_integration_order_status', '/rest/dealer/get-order-status');
+      $result = tmobile_sugarcrm_request($endpoint, json_encode($data));
+
+      if (!empty($result->data) && $data = json_decode($result->data)) {
+        if (!empty($data->orderstatus)) {
+          $status_code = strtoupper($data->orderstatus->code);
+
+          if (!empty($data->orderstatus->detailedstatusses->detailedstatus)) {
+            // Set the status present in the response.
+            $status = $data->orderstatus->detailedstatusses->detailedstatus->status;
+            $items = tmobile_dealer_dealership_order_status_message($data->orderstatus->detailedstatusses->detailedstatus);
+          }
+
+          // Set the current order status as defined in messages.
+          if (isset($messages[$status_code])) {
+            $status = $messages[$status_code];
+          }
+        }
+      }
+    }
+    else {
+      $status = ($response->result_code == '20') ? t('The order is not valid') : t('SugarCRM is not available, order will be sent later.');
+    }
+  }
+
+  $markup = array(
+    '#markup' => t('Order status:') . ' ' . $status,
+    '#prefix' => '<div class="l-content--inner">',
+    '#suffix' => '</div>',
+  );
+
+  if (!empty($items)) {
+    $markup['#markup'] .= '<br/><br/>' . theme_item_list(array(
+        'items' => $items,
+        'title' => t('Details'),
+        'type' => 'ul',
+        'attributes' => array(),
+      ));
+  }
+  if ($order_number) {
+    $markup['#markup'] .= '<br/><br/>' . t('Order ID:') . ' ' . $order_number;
+  }
+
+  return $markup;
+}
