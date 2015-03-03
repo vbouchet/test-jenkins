@@ -7,6 +7,6 @@
 /**
  * A super function.
  */
-function custom_secondary_test_function($conf, $display, $args, $contexts, $pane) {
+function custom_secondary_test_function() {
   return 'test';
 }
