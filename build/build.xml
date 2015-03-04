@@ -295,7 +295,7 @@
 
     <target name="-define-status"
             description="Set the build.status value to determine the build status.">
-        <echo message="${test.phpdebug.failed" />
+        <echo message="${test.phpdebug.failed}" />
         <condition property="build.failed">
             <or>
                 <isfailure code="${test.phpcs}" />
