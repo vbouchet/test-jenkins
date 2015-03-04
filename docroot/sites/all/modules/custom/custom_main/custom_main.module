@@ -22,4 +22,5 @@ function custom_main_menu() {
 
 function custom_main_test() {
   var_dump('test');
+  dsm('test');
 }
