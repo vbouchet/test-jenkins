@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug finalize"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug, finalize"
             description=""/>
 
     <target name="prepare"
