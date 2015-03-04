@@ -211,7 +211,7 @@
                 <equals arg1="${test.phpdebug}" arg2="0" />
             </not>
         </condition>-->
-        <exec executable="sh" output="${basedir}/build/logs/comment-phpdebug.md" error="${basedir}/build/logs/comment-phpdebug.md">
+        <exec executable="/bin/sh" output="${basedir}/build/logs/comment-phpdebug.md">
             <arg value="-c" />
             <arg value="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" />
         </exec>
