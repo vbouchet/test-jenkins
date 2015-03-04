@@ -21,7 +21,7 @@ function custom_main_menu() {
 }
 
 /**
- * A super comment
+ * A super comment.
  */
 function custom_main_test() {
   var_dump('test');
