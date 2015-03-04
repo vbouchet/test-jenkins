@@ -227,7 +227,6 @@
             <arg value="-c" />
             <arg value="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" />
         </exec>
-        <echo message="${test.phpdebug}" />
         <condition property="test.phpdebug.succeed">
             <equals arg1="${test.phpdebug}" arg2="0" />
         </condition>
@@ -301,7 +300,7 @@
                 <isfailure code="${test.phpcs}" />
                 <isfailure code="${test.phpcpd}" />
                 <isfailure code="${test.phpmd}" />
-                <isfailure code="${test.phpdebug.succeed}" />
+                <equals arg1="${test.phpdebug.failed}" arg2="1" />
             </or>
         </condition>
         <condition property="build.succeed">
