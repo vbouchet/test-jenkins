@@ -199,8 +199,7 @@
 
     <target name="-run-phpdebug"
             description="Detect debug in code.">
-        <echo message="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" />
-        <exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" output="${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
+        <!--<exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" output="${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
         <exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'dsm'" output="${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
 
         <exec command="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" resultproperty="test.phpdebug" failonerror="false" />
@@ -211,7 +210,11 @@
             <not>
                 <equals arg1="${test.phpdebug}" arg2="0" />
             </not>
-        </condition>
+        </condition>-->
+        <exec executable="sh" output=" ${basedir}/build/logs/comment-phpdebug.md">
+            <arg value="-c" />
+            <arg value="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" />
+        </exec>
     </target>
 
     <target name="-phpdebug-failed"
