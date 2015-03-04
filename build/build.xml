@@ -301,6 +301,7 @@
                 <isfailure code="${test.phpcs}" />
                 <isfailure code="${test.phpcpd}" />
                 <isfailure code="${test.phpmd}" />
+                <isfailure code="${test.phpdebug.succeed}" />
             </or>
         </condition>
         <condition property="build.succeed">
