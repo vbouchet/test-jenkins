@@ -19,3 +19,7 @@ function custom_main_menu() {
 
   return $items;
 }
+
+function custom_main_test() {
+  var_dump('test');
+}
