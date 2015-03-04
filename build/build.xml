@@ -199,8 +199,8 @@
 
     <target name="-run-phpdebug"
             description="Detect debug in code.">
-        <exec command="find docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
-        <exec command="find docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'dsm' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
+        <exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
+        <exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'dsm' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
 
         <exec command="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" resultproperty="test.phpdebug" failonerror="false" />
         <condition property="test.phpdebug.succeed">
