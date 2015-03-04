@@ -1,51 +1,256 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
-
     <target name="build"
-            depends="prepare, phploc, phpcs, status"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, finalize"
             description=""/>
 
-    <target name="clean-dir"
+    <target name="prepare"
+            depends="-clean-dir, -init-dir"
+            description="Prepare for build">
+    </target>
+
+    <target name="-clean-dir"
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/logs" />
     </target>
 
-    <target name="init-dir"
+    <target name="-init-dir"
             description="Create directories and files">
         <mkdir dir="${basedir}/build/logs" />
         <touch file="${basedir}/build/logs/comment.md" />
-    </target>
-
-    <target name="prepare"
-            depends="clean-dir, init-dir"
-            description="Prepare for build">
+        <touch file="${basedir}/build/logs/comment-summary.md" />
+        <touch file="${basedir}/build/logs/comment-body.md" />
+        <touch file="${basedir}/build/logs/comment-phpcs.md" />
+        <touch file="${basedir}/build/logs/comment-phpcpd.md" />
+        <touch file="${basedir}/build/logs/comment-phpmd.md" />
     </target>
 
     <target name="phploc"
-            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
-        <exec executable="phploc">
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line."
+            depends="-run-phploc" />
+
+    <target name="-run-phploc"
+            description="Get statistics on code and prepare variable for testing.">
+        <exec executable="phploc" failonerror="false">
             <arg value="--log-csv" />
             <arg value="${basedir}/build/logs/phploc.csv" />
             <arg value="--names"/>
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <loadfile property="test.phploc.previous" srcFile="${basedir}/build/logs/phploc.csv" />
+        <!--<echo message="${test.phploc.previous}" />
+        <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
+        <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
+        <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
+        <property name="prefix_str" value="test.phploc."/>
+        <split value="${test.phploc}" delimiter="," prefix="${prefix_str}"/>-->
     </target>
 
     <target name="phpcs"
+            depends="-run-phpcs, -phpcs-failed, -phpcs-succeed"
+            description="Run PHP_Codesniffer and update comments files" />
+
+    <target name="-run-phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="phpcs" output="${basedir}/build/logs/comment.md" resultproperty="test.phpcs" failonerror="false">
+        <exec executable="phpcs" output="${basedir}/build/logs/comment-phpcs.md" resultproperty="test.phpcs" failonerror="false">
             <arg value="--standard=Drupal" />
             <arg value="--report=full" />
-            <arg path="${basedir}/docroot/sites/all/modules/custom/custom_main/custom_main.module" />
+            <arg value="--extensions='php,module,inc,install,profile,theme,info'" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
+        <condition property="test.phpcs.succeed">
+            <equals arg1="${test.phpcs}" arg2="0" />
+        </condition>
+        <condition property="test.phpcs.failed">
+            <equals arg1="${test.phpcs}" arg2="1" />
+        </condition>
     </target>
 
-    <target name="status"
-            description="Determine the build status">
-        <condition property="build.failed">
-            <isfailure code="${test.phpcs}" />
-        </condition>
-        <fail if="build.failed" message="Build failed here" />
+    <target name="-phpcs-failed"
+            if="test.phpcs.failed"
+            description="Update comment-summary with PHP-Codesniffer result and prepare the comment-phpcs file.">
+        <replace file="${basedir}/build/logs/comment-phpcs.md" value="">
+            <replacetoken><![CDATA[UPGRADE TO PHP_CODESNIFFER 2.0 TO FIX ERRORS AUTOMATICALLY]]></replacetoken>
+        </replace>
+        <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
+                       match="(FILE: (.*)sites/all/)"
+                       replace="+ "
+                       byline="true" />
+        <replaceregexp file="${basedir}/build/logs/comment-phpcs.md"
+                       match="(----*)"
+                       replace="${line.separator}"
+                       byline="true" />
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Codesniffer${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpcs.md" />
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="Time:" />
+                    <contains value="Mb" />
+                </linecontains>
+                <linecontains negate="true">
+                    <contains value=" ERROR(S) AFFECTING " />
+                </linecontains>
+            </filterchain>
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Codesniffer${line.separator}</concat>
     </target>
+
+    <target name="-phpcs-succeed"
+            if="test.phpcs.succeed"
+            description="Update comment-summary with PHP-Codesniffer result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Codesniffer${line.separator}</concat>
+    </target>
+
+    <target name="phpcpd"
+            depends="-run-phpcpd, -phpcpd-failed, -phpcpd-succeed"
+            description="Run PHP_Codesniffer and update comments files" />
+
+    <target name="-run-phpcpd"
+            description="Find duplicated code.">
+        <exec executable="phpcpd" output="${basedir}/build/logs/comment-phpcpd.md" resultproperty="test.phpcpd" failonerror="false">
+            <arg value="--names='*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine'" />
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
+        </exec>
+        <condition property="test.phpcpd.succeed">
+            <equals arg1="${test.phpcpd}" arg2="0" />
+        </condition>
+        <condition property="test.phpcpd.failed">
+            <equals arg1="${test.phpcpd}" arg2="1" />
+        </condition>
+    </target>
+
+    <target name="-phpcpd-failed"
+            if="test.phpcpd.failed"
+            description="Update comment-summary with Copy/Paste detector result and prepare the comment-phpcpd file.">
+        <replace file="${basedir}/build/logs/comment-phpcpd.md" value="">
+            <replacetoken><![CDATA[phpcpd 2.0.1 by Sebastian Bergmann.]]></replacetoken>
+        </replace>
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Copy/Paste Detector${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpcpd.md" />
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="Time:" />
+                    <contains value="Mb" />
+                </linecontains>
+            </filterchain>
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Copy/Paste${line.separator}</concat>
+    </target>
+
+    <target name="-phpcpd-succeed"
+            if="test.phpcpd.succeed"
+            description="Update comment-summary with Copy/Paste detector result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Copy/Paste${line.separator}</concat>
+    </target>
+
+    <target name="phpmd"
+            depends="-run-phpmd, -phpmd-failed, -phpmd-succeed"
+            description="Run PHP Mess Detector and update comments files" />
+
+    <target name="-run-phpmd"
+            description="Detect mess in code.">
+        <exec executable="phpmd" resultproperty="test.phpmd" failonerror="false">
+            <arg path="${basedir}/docroot/sites/all/modules/custom" />
+            <arg value="text" />
+            <arg value="codesize,design,naming,unusedcode" />
+            <arg value="--suffixes" />
+            <arg value="php,inc,install,module,test,theme,engine" />
+            <arg value="--reportfile" />
+            <arg path="${basedir}/build/logs/comment-phpmd.md" />
+        </exec>
+        <condition property="test.phpmd.succeed">
+            <equals arg1="${test.phpmd}" arg2="0" />
+        </condition>
+        <condition property="test.phpmd.failed">
+            <or>
+                <equals arg1="${test.phpmd}" arg2="1" />
+                <equals arg1="${test.phpmd}" arg2="2" />
+            </or>
+        </condition>
+    </target>
+
+    <target name="-phpmd-failed"
+            if="test.phpmd.failed"
+            description="Update comment-summary with Mess detector result and prepare the comment-phpmd file.">
+        <replaceregexp file="${basedir}/build/logs/comment-phpmd.md"
+                       match="(/var/lib/(.*)sites/all/)"
+                       replace="+ "
+                       byline="true" />
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Mess Detector${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpmd.md" />
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Mess Detector${line.separator}</concat>
+    </target>
+
+    <target name="-phpmd-succeed"
+            if="test.phpmd.succeed"
+            description="Update comment-summary with Mess detector result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Mess Detector${line.separator}</concat>
+    </target>
+
+    <target name="finalize"
+            depends="-define-status, -prepare-comment, -prepare-comment-failed, -slack-notification-succeed, -slack-notification-failed"
+            description="Determine the build status">
+        <fail if="build.failed" />
+    </target>
+
+    <target name="-slack-notification-succeed"
+            description="Send notification to Slack in case of success"
+            if="build.succeed">
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@TechLead: This PR is ready for review.&quot;}' https://hooks.slack.com/services/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" />
+    </target>
+
+    <target name="-slack-notification-failed"
+            description="Send notification to Slack in case of failure"
+            if="build.failed">
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesnt succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
+    </target>
+
+    <target name="-prepare-comment"
+            description="Prepare the comment file used on Github">
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">## Summary${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-summary.md"/>
+        </concat>
+    </target>
+
+    <target name="-prepare-comment-failed"
+            if="build.failed"
+            description="Update the comment with details in case of build failure.">
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">${line.separator}-----------${line.separator}</concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment.md">## Details${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-body.md"/>
+        </concat>
+    </target>
+
+    <target name="-define-status"
+            description="Set the build.status value to determine the build status.">
+        <condition property="build.failed">
+            <or>
+                <isfailure code="${test.phpcs}" />
+                <isfailure code="${test.phpcpd}" />
+                <isfailure code="${test.phpmd}" />
+            </or>
+        </condition>
+        <condition property="build.succeed">
+            <isfalse value="${build.failed}" />
+        </condition>
+    </target>
+
+    <scriptdef name="split" language="javascript">
+        <attribute name="value"/>
+        <attribute name="delimiter"/>
+        <attribute name="prefix"/>
+        <![CDATA[
+         values = attributes.get("value").split(attributes.get("delimiter"));
+         for(i=0; i<values.length; i++) {
+             project.setNewProperty(attributes.get("prefix")+i, values[i]);
+         }
+     ]]>
+    </scriptdef>
 </project>

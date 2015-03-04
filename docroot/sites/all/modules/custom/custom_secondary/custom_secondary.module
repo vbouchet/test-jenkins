@@ -1,0 +1,12 @@
+<?php
+/**
+ * @file
+ * Code for the secondary module.
+ */
+
+/**
+ * A super function.
+ */
+function custom_secondary_test_function() {
+  return 'test';
+}
