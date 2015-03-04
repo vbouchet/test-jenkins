@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phpcs, phpcpd, phploc, phpmd, finalize"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug finalize"
             description=""/>
 
     <target name="prepare"
@@ -23,6 +23,7 @@
         <touch file="${basedir}/build/logs/comment-phpcs.md" />
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
         <touch file="${basedir}/build/logs/comment-phpmd.md" />
+        <touch file="${basedir}/build/logs/comment-phpdebug.md" />
     </target>
 
     <target name="phploc"
@@ -38,8 +39,8 @@
             <arg value="*.php,*.inc,*.install,*.module,*.test,*.theme,*.engine" />
             <arg path="${basedir}/docroot/sites/all/modules/custom" />
         </exec>
-        <loadfile property="test.phploc.previous" srcFile="${basedir}/build/logs/phploc.csv" />
-        <!--<echo message="${test.phploc.previous}" />
+        <!--<loadfile property="test.phploc.previous" srcFile="${basedir}/build/logs/phploc.csv" />
+        <echo message="${test.phploc.previous}" />
         <exec command="sed -i -e '1d' ${basedir}/build/logs/phploc.csv" />
         <exec command="sed -i 's/\&quot;//g' ${basedir}/build/logs/phploc.csv" />
         <loadfile property="test.phploc" srcFile="${basedir}/build/logs/phploc.csv" />
@@ -192,6 +193,46 @@
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Mess Detector${line.separator}</concat>
     </target>
 
+    <target name="phpdebug"
+            depends="-run-phpdebug, -phpdebug-failed, -phpdebug-succeed"
+            description="Find some debug code." />
+
+    <target name="-run-phpdebug"
+            description="Detect debug in code.">
+        <exec command="find docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
+        <exec command="find docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'dsm' >> ${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
+
+        <exec command="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" resultproperty="test.phpdebug" failonerror="false" />
+        <condition property="test.phpdebug.succeed">
+            <equals arg1="${test.phpdebug}" arg2="0" />
+        </condition>
+        <condition property="test.phpdebug.failed">
+            <not>
+                <equals arg1="${test.phpdebug}" arg2="0" />
+            </not>
+        </condition>
+    </target>
+
+    <target name="-phpdebug-failed"
+            if="test.phpdebug.failed"
+            description="Update comment-summary with Debug code result and prepare the comment-phpdebug file.">
+        <replaceregexp file="${basedir}/build/logs/comment-phpdebug.md"
+                       match="(/var/lib/(.*)sites/all/)"
+                       replace="+ "
+                       byline="true" />
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Debug code${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-phpdebug.md" />
+        </concat>
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Debug Code${line.separator}</concat>
+    </target>
+
+    <target name="-phpdebug-succeed"
+            if="test.phpdebug.succeed"
+            description="Update comment-summary with Debug code result.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Debug Code${line.separator}</concat>
+    </target>
+
     <target name="finalize"
             depends="-define-status, -prepare-comment, -prepare-comment-failed, -slack-notification-succeed, -slack-notification-failed"
             description="Determine the build status">
@@ -242,7 +283,7 @@
         </condition>
     </target>
 
-    <scriptdef name="split" language="javascript">
+    <!--<scriptdef name="split" language="javascript">
         <attribute name="value"/>
         <attribute name="delimiter"/>
         <attribute name="prefix"/>
@@ -252,5 +293,5 @@
              project.setNewProperty(attributes.get("prefix")+i, values[i]);
          }
      ]]>
-    </scriptdef>
+    </scriptdef>-->
 </project>
