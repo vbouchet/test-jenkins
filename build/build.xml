@@ -199,18 +199,6 @@
 
     <target name="-run-phpdebug"
             description="Detect debug in code.">
-        <!--<exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump'" output="${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
-        <exec command="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'dsm'" output="${basedir}/build/logs/comment-phpdebug.md" failonerror="false" />
-
-        <exec command="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" resultproperty="test.phpdebug" failonerror="false" />
-        <condition property="test.phpdebug.succeed">
-            <equals arg1="${test.phpdebug}" arg2="0" />
-        </condition>
-        <condition property="test.phpdebug.failed">
-            <not>
-                <equals arg1="${test.phpdebug}" arg2="0" />
-            </not>
-        </condition>-->
         <exec executable="/bin/sh" outputProperty="test.phpdebug.vardump">
             <arg value="-c" />
             <arg value="find ${basedir}/docroot/sites/all/modules/custom -name '*.js' -or -name '*.module' -or -name '*.inc' -or -name '*.install' | xargs grep -n 'var_dump('" />
@@ -266,13 +254,13 @@
     <target name="-slack-notification-succeed"
             description="Send notification to Slack in case of success"
             if="build.succeed">
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@TechLead: This PR is ready for review.&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@TechLead: This PR is ready for review.&quot;}' ${slackHookUrl}" />
     </target>
 
     <target name="-slack-notification-failed"
             description="Send notification to Slack in case of failure"
             if="build.failed">
-        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesnt succeed tests. Please review and update.&quot;}' https://hooks.slack.com/services/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" />
+        <exec command="curl -X POST --data-urlencode 'payload={&quot;channel&quot;: &quot;#general&quot;, &quot;text&quot;: &quot;@${commitAuthor}: This PR doesnt succeed tests. Please review and update.&quot;}' ${slackHookUrl}" />
     </target>
 
     <target name="-prepare-comment"
