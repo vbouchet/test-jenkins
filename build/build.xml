@@ -32,7 +32,7 @@
         <mkdir dir="${basedir}/docroot/sites/default/files" />
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="chmod 777 ${basedir}/docroot/sites/default/files" />
+            <arg value="chmod 777 ${basedir}/docroot/sites/default/files/" />
         </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
