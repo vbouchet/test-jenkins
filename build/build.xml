@@ -39,7 +39,7 @@
         </exec>-->
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="chmod 777 -Rf ${basedir}/docroot/sites/default/settings.php" />
+            <arg value="chmod 777 -R ${basedir}/docroot/sites/default" />
         </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
@@ -47,7 +47,7 @@
         </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="chmod 644 ${basedir}/docroot/sites/default/settings.php" />
+            <arg value="chmod 755 -R ${basedir}/docroot/sites/default" />
         </exec>
     </target>
 
