@@ -29,26 +29,23 @@
     <target name="-init-drupal"
             description="Prepare and install drupal">
         <copy file="${basedir}/build/settings.php" todir="${basedir}/docroot/sites/default/" />
+        <mkdir dir="${basedir}/docroot/sites/default/files" />
         <exec executable="/bin/sh">
             <arg value="-c" />
             <arg value="cd ${basedir}/docroot/" />
         </exec>
         <!--<exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="drush sql-drop -yes" />
+            <arg value="chmod 777 ${basedir}/docroot/sites/default" />
         </exec>-->
-        <exec executable="/bin/sh">
-            <arg value="-c" />
-            <arg value="chmod 777 -R ${basedir}/docroot/sites/default" />
-        </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
             <arg value="drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)' -y" />
         </exec>
-        <exec executable="/bin/sh">
+        <!--<exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="chmod 755 -R ${basedir}/docroot/sites/default" />
-        </exec>
+            <arg value="chmod 755 ${basedir}/docroot/sites/default" />
+        </exec>-->
     </target>
 
     <target name="phploc"
