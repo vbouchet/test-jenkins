@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug, finalize"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug, phpunit, finalize"
             description=""/>
 
     <target name="prepare"
@@ -38,10 +38,6 @@
             <arg value="-c" />
             <arg value="cd ${basedir}/docroot/; drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)' -y" />
         </exec>
-        <!--<exec executable="/bin/sh">
-            <arg value="-c" />
-            <arg value="chmod 755 ${basedir}/docroot/sites/default" />
-        </exec>-->
     </target>
 
     <target name="phploc"
@@ -261,6 +257,18 @@
             if="test.phpdebug.succeed"
             description="Update comment-summary with Debug code result.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Debug Code${line.separator}</concat>
+    </target>
+
+    <target name="phpunit"
+            depends="-run-phpunit"
+            description="Run simpletest." />
+
+    <target name="-run-phpunit"
+           description="Run selected simpletests." >
+        <exec executable="/bin/sh">
+            <arg value="-c" />
+            <arg value="cd ${basedir}/docroot; drush en simpletest;" />
+        </exec>
     </target>
 
     <target name="finalize"
