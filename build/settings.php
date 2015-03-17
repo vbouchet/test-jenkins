@@ -217,7 +217,7 @@ $databases = array('default' => array('default' => array(
   'database' => 'test_jenkins',
   'username' => 'drupal',
   'password' => 'drupal',
-  'host' => '127.0.0.1',
+  'host' => 'localhost',
 )));
 
 /**
