@@ -5,7 +5,7 @@
             description=""/>
 
     <target name="prepare"
-            depends="-clean-dir, -init-dir"
+            depends="-clean-dir, -init-dir, -init-drupal"
             description="Prepare for build">
     </target>
 
@@ -24,6 +24,11 @@
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
         <touch file="${basedir}/build/logs/comment-phpmd.md" />
         <touch file="${basedir}/build/logs/comment-phpdebug.md" />
+    </target>
+
+    <target name="-init-drupal"
+            description="Copy settings.php">
+        <copy file="${basedir}/build/settings.php" todir="${basedir}/docroot/sites/default/" />
     </target>
 
     <target name="phploc"
