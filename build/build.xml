@@ -33,17 +33,17 @@
             <arg value="-c" />
             <arg value="cd ${basedir}/docroot/" />
         </exec>
+        <!--<exec executable="/bin/sh">
+            <arg value="-c" />
+            <arg value="drush sql-drop -yes" />
+        </exec>-->
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="drush sql-drop --yes" />
+            <arg value="chmod 777 -Rf ${basedir}/docroot/sites/default/settings.php" />
         </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="chmod 777 ${basedir}/docroot/sites/default/settings.php" />
-        </exec>
-        <exec executable="/bin/sh">
-            <arg value="-c" />
-            <arg value="drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)'" />
+            <arg value="drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)' -y" />
         </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
