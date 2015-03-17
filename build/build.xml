@@ -27,8 +27,16 @@
     </target>
 
     <target name="-init-drupal"
-            description="Copy settings.php">
+            description="Prepare and install drupal">
         <copy file="${basedir}/build/settings.php" todir="${basedir}/docroot/sites/default/" />
+        <exec executable="/bin/sh">
+            <arg value="-c" />
+            <arg value="drush sql-drop --yes" />
+        </exec>
+        <exec executable="/bin/sh">
+            <arg value="-c" />
+            <arg value="drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)'" />
+        </exec>
     </target>
 
     <target name="phploc"
