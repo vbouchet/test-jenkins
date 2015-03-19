@@ -1,0 +1,37 @@
+default:
+  suites:
+    default:
+      filters:
+      contexts:
+        - FeatureContext
+        - Drupal\DrupalExtension\Context\DrupalContext
+        - Drupal\DrupalExtension\Context\MinkContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\DrushContext
+  extensions:
+    Behat\MinkExtension:
+      goutte: ~
+      selenium2: ~
+      base_url: 'http://drupal-jenkins.local/'
+    Drupal\DrupalExtension:
+      blackbox: ~
+      api_driver: 'drupal'
+      drupal:
+        drupal_root: '/var/lib/jenkins/jobs/MasterPR/workspace/docroot'
+      region_map:
+        Header: '.region-header'
+        Featured: '.region-featured'
+        Sidebar first: '.region-sidebar-first'
+        Left sidebar: '.region-sidebar-first'
+        Sidebar second: '.region-sidebar-second'
+        Highlighted: '.region-highlighted'
+        Help: '.region-content'
+        Content: '.region-content'
+        Tryptych first: '.region-triptych-first'
+        Triptych middle: '.region-triptych-first'
+        Triptych last: '.region-triptych-first'
+        Footer first column: '.region-footer-firstcolumn'
+        Footer second column: '.region-footer-secondcolumn'
+        Footer third column:  '.region-footer-thirdcolumn'
+        Footer fourth column: '.region-footer-fourthcolumn'
+        Footer: '.region-footer'
