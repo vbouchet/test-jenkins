@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="test-jenkins" default="build">
     <target name="build"
-            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug, phpunit, finalize"
+            depends="prepare, phpcs, phpcpd, phploc, phpmd, phpdebug, phpunit, behat, finalize"
             description=""/>
 
     <target name="prepare"
@@ -24,16 +24,13 @@
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
         <touch file="${basedir}/build/logs/comment-phpmd.md" />
         <touch file="${basedir}/build/logs/comment-phpdebug.md" />
+        <touch file="${basedir}/build/logs/behat.out" />
     </target>
 
     <target name="-init-drupal"
             description="Prepare and install drupal">
         <copy file="${basedir}/build/settings.php" todir="${basedir}/docroot/sites/default/" />
         <mkdir dir="${basedir}/docroot/sites/default/files" />
-        <exec executable="/bin/sh">
-            <arg value="-c" />
-            <arg value="chmod 777 ${basedir}/docroot/sites/default/files/" />
-        </exec>
         <exec executable="/bin/sh">
             <arg value="-c" />
             <arg value="cd ${basedir}/docroot/; drush site-install standard --site-name=Jenkins --site-mail=vincent.bouchet.31@yopmail.com --locale=en --account-name=admin --account-pass=admin install_configure_form.update_status_module='array(FALSE,FALSE)' -y" />
@@ -267,9 +264,22 @@
            description="Run selected simpletests." >
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="cd ${basedir}/docroot; drush en simpletest;" />
+            <arg value="cd ${basedir}/docroot; drush en simpletest -y;" />
         </exec>
     </target>
+
+    <target name="behat"
+            depends="-run-behat"
+            description="Run behat tests." />
+
+    <target name="-run-behat"
+            description="Run behat test and store result in appropriate file">
+        <exec executable="/bin/sh">
+            <arg value="-c" />
+            <arg value="behat --no-colors -f pretty --format-settings='{\"paths\": false}' --out test.out" />
+        </exec>
+    </target>
+
 
     <target name="finalize"
             depends="-define-status, -prepare-comment, -prepare-comment-failed, -slack-notification-succeed, -slack-notification-failed"
