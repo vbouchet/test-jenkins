@@ -276,7 +276,7 @@
             description="Run behat test and store result in appropriate file">
         <exec executable="/bin/sh">
             <arg value="-c" />
-            <arg value="behat --no-colors -f pretty --out ${basedir}/build/logs/behat.out" />
+            <arg value="cd ${basedir}/behat behat --no-colors -f pretty --out ${basedir}/build/logs/behat.out" />
         </exec>
     </target>
 
