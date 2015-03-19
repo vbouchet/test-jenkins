@@ -274,9 +274,9 @@
 
     <target name="-run-behat"
             description="Run behat test and store result in appropriate file">
-        <exec executable="/bin/sh">
+        <exec executable="/bin/sh" output="${basedir}/build/logs/behat.md">
             <arg value="-c" />
-            <arg value="cd ${basedir}/behat behat --no-colors -f pretty > ${basedir}/build/logs/behat.out" />
+            <arg value="cd ${basedir}/behat behat --no-colors -f pretty" />
         </exec>
     </target>
 
