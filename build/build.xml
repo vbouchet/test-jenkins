@@ -227,6 +227,7 @@
             <arg value="-c" />
             <arg value="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" />
         </exec>
+        <echo message="${test.phpdebug}" />
         <condition property="test.phpdebug.succeed">
             <equals arg1="${test.phpdebug}" arg2="0" />
         </condition>
