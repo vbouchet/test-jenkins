@@ -24,6 +24,7 @@
         <touch file="${basedir}/build/logs/comment-phpcpd.md" />
         <touch file="${basedir}/build/logs/comment-phpmd.md" />
         <touch file="${basedir}/build/logs/comment-phpdebug.md" />
+        <touch file="${basedir}/build/logs/comment-behat.md" />
         <touch file="${basedir}/build/logs/behat.out" />
     </target>
 
@@ -304,6 +305,9 @@
             <arg value="-c" />
             <arg value="cat ${basedir}/build/logs/behat.out | tail -n +${test.behat.linenb} | head -3" />
         </exec>
+        <replace file="${basedir}/build/logs/comment-behat.md" value="+ ">
+            <replacetoken><![CDATA[    ]]></replacetoken>
+        </replace>
         <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Behat${line.separator}</concat>
         <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
             <filelist dir="${basedir}/build/logs" files="comment-behat.md" />
