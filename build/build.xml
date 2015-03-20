@@ -269,15 +269,35 @@
     </target>
 
     <target name="behat"
-            depends="-run-behat"
+            depends="-run-behat, -behat-failed, -behat-succeed"
             description="Run behat tests." />
 
     <target name="-run-behat"
             description="Run behat test and store result in appropriate file">
-        <exec executable="/bin/sh" output="${basedir}/build/logs/behat.out">
+        <exec executable="/bin/sh" output="${basedir}/build/logs/behat.out" outputProperty="test.behat">
             <arg value="-c" />
             <arg value="cd ${basedir}/behat; behat --no-colors -f pretty;" />
         </exec>
+        <condition property="test.behat.succeed">
+            <equals arg1="${test.behat}" arg2="0" />
+        </condition>
+        <condition property="test.behat.failed">
+            <not>
+                <equals arg1="${test.behat}" arg2="0" />
+            </not>
+        </condition>
+    </target>
+
+    <target name="-behat-failed"
+            if="test.behat.failed"
+            description="Update comment-summary with Behat result code and prepare the comment-behat.md file.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [] Behat${line.separator}</concat>
+    </target>
+
+    <target name="-behat-succeed"
+            if="test.behat.succeed"
+            description="Update comment-summary with Behat result code.">
+        <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [X] Behat${line.separator}</concat>
     </target>
 
 
