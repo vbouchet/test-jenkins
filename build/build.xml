@@ -286,6 +286,10 @@
                 <equals arg1="${test.behat}" arg2="0" />
             </not>
         </condition>
+        <echo message="test.behat = ${test.behat}" />
+        <echo message="test.behat.failed = ${test.behat.failed}" />
+        <echo message="test.behat.succeed = ${test.behat.succeed}" />
+
     </target>
 
     <target name="-behat-failed"
