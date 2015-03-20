@@ -274,9 +274,13 @@
 
     <target name="-run-behat"
             description="Run behat test and store result in appropriate file">
-        <exec executable="/bin/sh" output="${basedir}/build/logs/behat.out" outputProperty="test.behat">
+        <exec executable="/bin/sh" output="${basedir}/build/logs/behat.out">
             <arg value="-c" />
             <arg value="cd ${basedir}/behat; behat --no-colors -f pretty;" />
+        </exec>
+        <exec executable="/bin/sh" outputProperty="test.behat">
+            <arg value="-c" />
+            <arg value="grep -Fc 'Failed scenarios:' ${basedir}/build/logs/behat.out" />
         </exec>
         <condition property="test.behat.succeed">
             <equals arg1="${test.behat}" arg2="0" />
