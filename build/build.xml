@@ -225,7 +225,7 @@
 
         <exec executable="/bin/sh" outputProperty="test.phpdebug">
             <arg value="-c" />
-            <arg value="ls -ltr ${basedir}/build/logs/comment-phpdebug.md | cut -c 32-33" />
+            <arg value="grep -v '^ *$' ${basedir}/build/logs/comment-phpdebug.md | wc -l" />
         </exec>
         <echo message="${test.phpdebug}" />
         <condition property="test.phpdebug.succeed">
