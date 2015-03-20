@@ -227,7 +227,6 @@
             <arg value="-c" />
             <arg value="grep -v '^ *$' ${basedir}/build/logs/comment-phpdebug.md | wc -l" />
         </exec>
-        <echo message="${test.phpdebug}" />
         <condition property="test.phpdebug.succeed">
             <equals arg1="${test.phpdebug}" arg2="0" />
         </condition>
