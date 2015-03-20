@@ -23,6 +23,6 @@ Feature: Test the login block
   Scenario: Test the user menu block visibility as authenticated user
     Given I am logged in as a user with the "authenticated user" role
     Given I am on the homepage
-    Then I should see the link "Logout"
+    Then I should see the link "Log out"
     When I visit "user/logout"
     Then I should be on the homepage
