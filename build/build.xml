@@ -290,16 +290,29 @@
                 <equals arg1="${test.behat}" arg2="0" />
             </not>
         </condition>
-        <echo message="test.behat = ${test.behat}" />
-        <echo message="test.behat.failed = ${test.behat.failed}" />
-        <echo message="test.behat.succeed = ${test.behat.succeed}" />
-
     </target>
 
     <target name="-behat-failed"
             if="test.behat.failed"
             description="Update comment-summary with Behat result code and prepare the comment-behat.md file.">
         <concat append="true" destfile="${basedir}/build/logs/comment-summary.md">- [ ] Behat${line.separator}</concat>
+        <exec executable="/bin/sh" outputProperty="test.behat.linenb">
+            <arg value="-c" />
+            <arg value="grep -Fn 'Failed scenarios:' ${basedir}/build/logs/behat.out | cut -f1 -d:" />
+        </exec>
+        <exec executable="/bin/sh" output="${basedir}/build/logs/comment-behat.md">
+            <arg value="-c" />
+            <arg value="cat ${basedir}/build/logs/behat.out | tail -n +${test.behat.linenb} | head -3" />
+        </exec>
+        <concat append="true" destfile="${basedir}/build/logs/comment-body.md">#### Behat${line.separator}</concat>
+        <concat destfile="${basedir}/build/logs/comment-body.md" append="true">
+            <filelist dir="${basedir}/build/logs" files="comment-behat.md" />
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="Failed scenarios:" />
+                </linecontains>
+            </filterchain>
+        </concat>
     </target>
 
     <target name="-behat-succeed"
